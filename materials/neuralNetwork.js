@@ -590,9 +590,3 @@ class NeuralNetwork {
         this.drawVisuals()
     }
 }
-
-// Convert the weights into a single arbitrary value
-
-// Make sure the value is greater than 0
-
-export { NeuralNetwork }
