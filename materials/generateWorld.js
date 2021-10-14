@@ -70,7 +70,8 @@ function generateSnake(opts) {
 
     let type = "snake"
 
-    let pos = findRandomPos()
+    /* let pos = findRandomPos() */
+    let pos = { x: 0, y: 0 }
 
     placeObject({
         type: type,
@@ -96,10 +97,9 @@ function generateFood(opts) {
 
 function initWorld() {
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 100; i++) {
 
         generateSnake({
-            amount: 1,
             color: randomColor()
         })
     }
@@ -107,7 +107,6 @@ function initWorld() {
     for (let i = 0; i < 3; i++) {
 
         generateFood({
-            amount: 1,
             color: colors.green
         })
     }

@@ -19,7 +19,6 @@ let options = {
 
         if (snake.y >= gridSize - 1) return
 
-
         snake.y += 1
 
         setPosition(snake)
