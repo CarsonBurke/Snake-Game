@@ -77,7 +77,8 @@ function generateSnake(opts) {
         type: type,
         x: pos.x,
         y: pos.y,
-        color: opts.color
+        color: opts.color,
+        network: opts.network
     })
 }
 

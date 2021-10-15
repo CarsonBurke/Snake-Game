@@ -1,7 +1,7 @@
 let tick = 0
 let generation = 0
 let lastReset = 0
-let bestScore = 0
+let highestScore = 0
 
 function createNetwork(snake, opts) {
 
@@ -64,13 +64,13 @@ function moveSnake(snake) {
 
         let perceptron = lastLayer.perceptrons[perceptronName]
 
-        if (perceptron.activateValue >= 0) continue
+        if (perceptron.activateValue > 0) continue
 
         //
 
         let option = options[Object.keys(options)[perceptronName]]
 
-        option(snake, tick)
+        option(snake)
     }
 }
 
@@ -102,25 +102,37 @@ function getSnakeArray() {
     return snakeArray
 }
 
+function findDistance(pos1, pos2) {
+
+
+}
+
 function findClosestFood(snake) {
 
     let foodArray = getFoodArray()
 
     // 
 
-    let lowestValue = Math.min.apply(Math, foodArray.map(food => food.x - snake.x + food.y - snake.y))
+    let lowestValue = Math.min.apply(Math, foodArray.map(food => Math.sqrt(Math.pow(food.x - snake.x, 2) + Math.pow(food.y - snake.y, 2))))
+
+    snake.el.innerText = Math.floor(lowestValue)
 
     //
 
-    let closestFood = foodArray.filter(food => food.x - snake.x + food.y - snake.y == lowestValue)[0]
+    let closestFood = foodArray.filter(food => Math.sqrt(Math.pow(food.x - snake.x, 2) + Math.pow(food.y - snake.y, 2)) == lowestValue)[0]
 
     return closestFood
 }
 
 
-function isSnakeOnFood(snake, closestFood) {
+function isSnakeOnFood(snake) {
 
-    if (closestFood.x == snake.x && closestFood.y == snake.y) return true
+    let foodArray = getFoodArray()
+
+    for (let food of foodArray) {
+
+        if (food.x == snake.x && food.y == snake.y) return food
+    }
 }
 
 function findSnakeWithMostScore(snakes) {
@@ -152,7 +164,7 @@ function findBestSnake(snakes) {
 
         let closestFood = findClosestFood(snake)
 
-        let distance = closestFood.x - snake.x + closestFood.y - snake.y
+        let distance = Math.sqrt(Math.pow(closestFood.x - snake.x, 2) + Math.pow(closestFood.y - snake.y, 2))
 
         snakesWithDistance.push({ snake: snake, food: closestFood, distance: distance })
     }
@@ -183,6 +195,10 @@ function reproduce(snake, snakes, tick) {
 
         let el = snake.el
         el.remove()
+
+        //
+
+        snake.network.visualsParent.classList.remove("visualsParentShow")
 
         // Delete snake
 
@@ -242,6 +258,8 @@ function run(opts) {
             let inputs = [closestFood.x - snake.x, closestFood.y - snake.y]
             let outputCount = Object.keys(options).length
 
+            /* snake.el.innerText = inputs */
+
             //
 
             if (!snake.score) snake.score = 0
@@ -263,15 +281,17 @@ function run(opts) {
 
             //
 
-            if (isSnakeOnFood(snake, closestFood)) {
+            let food = isSnakeOnFood(snake)
+
+            if (food) {
 
                 //
 
-                closestFood.el.remove()
+                food.el.remove()
 
                 //
 
-                delete objects.food[closestFood.id]
+                delete objects.food[food.id]
 
                 //
 
