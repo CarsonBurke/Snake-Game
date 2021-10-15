@@ -203,6 +203,8 @@ function findSnakesWithMostScore(snakes) {
 
     bestSnakes = snakes.sort((a, b) => b.score - a.score)
 
+    bestSnakes.filter(snake => snake.score > 0)
+
     bestSnakes = bestSnakes.slice(0, 10)
 
     return bestSnakes
@@ -390,8 +392,6 @@ function run(opts) {
         if (bestSnakes.length == 0) return
 
         bestSnakes = bestSnakes.slice(0, 10)
-
-        console.log(bestSnakes)
 
         let bestSnake = bestSnakes[0]
 
