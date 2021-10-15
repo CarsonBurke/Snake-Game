@@ -530,11 +530,11 @@ class NeuralNetwork {
         this.svg.appendChild(line)
         perceptron1.lines[perceptron2Name] = line
     }
-    updateLine(perceptron1, perceptron2, perceptron2Name) {
+    updateLine(perceptron1, perceptron2Name) {
 
         let line = perceptron1.lines[perceptron2Name]
 
-        if (perceptron2.activateValue > 0) {
+        if (perceptron1.activateValue > 0) {
 
             line.classList.add("lineConnection")
         } else line.classList.remove("lineConnection")
@@ -573,7 +573,7 @@ class NeuralNetwork {
 
                     if (Object.keys(perceptron.lines).length == perceptronsAmountInProceedingLayer) {
 
-                        this.updateLine(perceptron, perceptron2, perceptron2Name)
+                        this.updateLine(perceptron, perceptron2Name)
 
                         continue
                     }

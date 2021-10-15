@@ -70,8 +70,8 @@ function generateSnake(opts) {
 
     let type = "snake"
 
-    /* let pos = { x: gridSize / 2, y: gridSize / 2 } */
-    let pos = { x: 0, y: 0 }
+    let pos = { x: gridSize / 2, y: gridSize / 2 }
+        /* let pos = { x: 0, y: 0 } */
 
     placeObject({
         type: type,

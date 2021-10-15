@@ -24,7 +24,7 @@ function createNetwork(snake, opts) {
 
     // Create hidden perceptrons
 
-    let hiddenPerceptronsNeed = 5
+    let hiddenPerceptronsNeed = 6
 
     // Loop through layers
 
