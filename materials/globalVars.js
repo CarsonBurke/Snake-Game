@@ -2,7 +2,7 @@
 
 let properties = {
     mapDimensions: 500,
-    gridPartSize: 20,
+    gridPartSize: 25,
     nextId: 0,
     map: {
         el: document.getElementById("map"),
@@ -25,7 +25,7 @@ let properties = {
         red: "#b51818",
         blue: "#3718b5",
         green: "#18b543",
-        yellow: "#e4ff00",
+        yellow: "#a0a620",
         purple: "#c700c2",
     },
     objects: {

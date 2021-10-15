@@ -262,7 +262,7 @@ body {
 .food {
     border-radius: 100%;
     transform: scale(0.9);
-    box-shadow: inset rgba(255, 255, 255, 0.4) 0 0 0 100px;
+    box-shadow: black 0 0 20px 0;
 }
 
 

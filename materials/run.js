@@ -1,7 +1,8 @@
 let tick = 0
 let generation = 0
 let lastReset = 0
-let highestScore = 0
+let score = 0
+let bestScore = 0
 
 function createNetwork(snake, opts) {
 
@@ -11,7 +12,7 @@ function createNetwork(snake, opts) {
 
     // Create layers
 
-    let layerCount = 3
+    let layerCount = 4
 
     for (let i = 0; i < layerCount; i++) network.addLayer({})
 
@@ -104,7 +105,8 @@ function getSnakeArray() {
 
 function findDistance(pos1, pos2) {
 
-
+    let distance = Math.sqrt(Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2))
+    return distance
 }
 
 function findClosestFood(snake) {
@@ -113,37 +115,32 @@ function findClosestFood(snake) {
 
     // 
 
-    let lowestValue = Math.min.apply(Math, foodArray.map(food => Math.sqrt(Math.pow(food.x - snake.x, 2) + Math.pow(food.y - snake.y, 2))))
+    let lowestValue = Math.min.apply(Math, foodArray.map(food => findDistance(food, snake)))
 
-    snake.el.innerText = Math.floor(lowestValue)
+    snake.el.innerText = lowestValue.toFixed(2)
 
     //
 
-    let closestFood = foodArray.filter(food => Math.sqrt(Math.pow(food.x - snake.x, 2) + Math.pow(food.y - snake.y, 2)) == lowestValue)[0]
+    let closestFood = foodArray.filter(food => findDistance(food, snake) == lowestValue)[0]
 
     return closestFood
 }
 
 
-function isSnakeOnFood(snake) {
+function isSnakeOnFood(snake, closestFood) {
 
-    let foodArray = getFoodArray()
-
-    for (let food of foodArray) {
-
-        if (food.x == snake.x && food.y == snake.y) return food
-    }
+    if (closestFood.x == snake.x && closestFood.y == snake.y) return true
 }
 
 function findSnakeWithMostScore(snakes) {
 
     // 
 
-    let lowestValue = Math.min.apply(Math, snakes.map(snake => snake.score))
+    let highestValue = Math.max.apply(Math, snakes.map(snake => snake.score))
 
     // 
 
-    let bestSnake = snakes.filter(snake => snake.score == lowestValue)[0]
+    let bestSnake = snakes.filter(snake => snake.score == highestValue)[0]
 
     return bestSnake
 }
@@ -185,7 +182,10 @@ function reproduce(snake, snakes, tick) {
 
     generation++
     lastReset = tick
-    highestScore = snake.score
+
+    if (score > bestScore) bestScore = score
+
+    score = 0
 
     // Loop through layers
 
@@ -228,8 +228,11 @@ function updateUI() {
     el = document.getElementById("generation")
     el.innerText = generation
 
-    el = document.getElementById("highestScore")
-    el.innerText = highestScore
+    el = document.getElementById("score")
+    el.innerText = score
+
+    el = document.getElementById("bestScore")
+    el.innerText = bestScore
 }
 
 function run(opts) {
@@ -255,14 +258,8 @@ function run(opts) {
 
             let closestFood = findClosestFood(snake)
 
-            let inputs = [closestFood.x - snake.x, closestFood.y - snake.y]
+            let inputs = [closestFood.x, snake.x, closestFood.y, snake.y]
             let outputCount = Object.keys(options).length
-
-            /* snake.el.innerText = inputs */
-
-            //
-
-            if (!snake.score) snake.score = 0
 
             //
 
@@ -281,32 +278,29 @@ function run(opts) {
 
             //
 
-            let food = isSnakeOnFood(snake)
-
-            if (food) {
+            if (isSnakeOnFood(snake, closestFood)) {
 
                 //
 
-                food.el.remove()
+                closestFood.el.remove()
 
                 //
 
-                delete objects.food[food.id]
+                delete objects.food[closestFood.id]
 
                 //
 
                 snake.score += 1
+                score += 1
 
                 //
 
                 generateFood({
-                    color: colors.green
+                    color: "#11dfd8"
                 })
             }
 
             //
-
-            snake.network.updateVisuals()
         }
 
         //

@@ -70,13 +70,14 @@ function generateSnake(opts) {
 
     let type = "snake"
 
-    /* let pos = findRandomPos() */
+    /* let pos = { x: gridSize / 2, y: gridSize / 2 } */
     let pos = { x: 0, y: 0 }
 
     placeObject({
         type: type,
         x: pos.x,
         y: pos.y,
+        score: 0,
         color: opts.color,
         network: opts.network
     })
@@ -108,7 +109,7 @@ function initWorld() {
     for (let i = 0; i < 3; i++) {
 
         generateFood({
-            color: colors.green
+            color: "#11dfd8"
         })
     }
 }
