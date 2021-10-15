@@ -12,7 +12,7 @@ function createNetwork(snake, opts) {
 
     // Create layers
 
-    let layerCount = 4
+    let layerCount = 5
 
     for (let i = 0; i < layerCount; i++) network.addLayer({})
 
@@ -24,7 +24,7 @@ function createNetwork(snake, opts) {
 
     // Create hidden perceptrons
 
-    let hiddenPerceptronsNeed = 6
+    let hiddenPerceptronsNeed = 5
 
     // Loop through layers
 
@@ -337,7 +337,7 @@ function run(opts) {
 
             let closestFood = findClosestFood(snake)
 
-            let inputs = [closestFood.x, snake.x, closestFood.y, snake.y, findDistance(closestFood, snake)]
+            let inputs = [closestFood.x, snake.x, closestFood.y, snake.y]
             let outputCount = Object.keys(options).length
 
             //
