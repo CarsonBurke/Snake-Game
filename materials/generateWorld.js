@@ -77,6 +77,7 @@ function generateSnake(opts) {
         type: type,
         x: pos.x,
         y: pos.y,
+        direction: "up",
         score: 0,
         color: opts.color,
         network: opts.network

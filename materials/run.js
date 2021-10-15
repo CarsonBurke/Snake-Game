@@ -55,7 +55,70 @@ function createNetwork(snake, opts) {
     snake.network = network
 }
 
+function moveUp(snake) {
+
+    if (snake.y <= 0) return
+
+    snake.y -= 1
+
+    setPosition(snake)
+}
+
+function moveLeft(snake) {
+
+    if (snake.x <= 0) return
+
+    snake.x -= 1
+
+    setPosition(snake)
+}
+
+function moveDown(snake) {
+
+    if (snake.y >= gridSize - 1) return
+
+    snake.y += 1
+
+    setPosition(snake)
+}
+
+function moveRight(snake) {
+
+    if (snake.x >= gridSize - 1) return
+
+    snake.x += 1
+
+    setPosition(snake)
+}
+
 function moveSnake(snake) {
+
+    switch (snake.direction) {
+
+        case "up":
+
+            moveUp(snake)
+            break
+
+        case "left":
+
+            moveLeft(snake)
+            break
+
+        case "down":
+
+            moveDown(snake)
+            break
+
+        case "right":
+
+            moveRight(snake)
+            break
+    }
+}
+
+
+function changeDirection(snake) {
 
     let lastLayer = snake.network.layers[Object.keys(snake.network.layers).length - 1]
 
@@ -117,7 +180,7 @@ function findClosestFood(snake) {
 
     let lowestValue = Math.min.apply(Math, foodArray.map(food => findDistance(food, snake)))
 
-    snake.el.innerText = lowestValue.toFixed(2)
+    snake.el.innerText = Math.floor(lowestValue)
 
     //
 
@@ -132,26 +195,25 @@ function isSnakeOnFood(snake, closestFood) {
     if (closestFood.x == snake.x && closestFood.y == snake.y) return true
 }
 
-function findSnakeWithMostScore(snakes) {
+function findSnakesWithMostScore(snakes) {
 
     // 
 
-    let highestValue = Math.max.apply(Math, snakes.map(snake => snake.score))
+    let bestSnakes = []
 
-    // 
+    bestSnakes = snakes.sort((a, b) => b.score - a.score)
 
-    let bestSnake = snakes.filter(snake => snake.score == highestValue)[0]
+    bestSnakes = bestSnakes.slice(0, 10)
 
-    return bestSnake
+    return bestSnakes
 }
 
-function findBestSnake(snakes) {
+function findBestSnakes(snakes) {
 
-    ///
+    //
 
-    let bestSnake = findSnakeWithMostScore(snakes)
-
-    if (bestSnake.score > 0) return bestSnake
+    let bestSnakes = findSnakesWithMostScore(snakes)
+    if (bestSnakes.length > 0) return bestSnakes
 
     // Find snake closest to a food
 
@@ -166,17 +228,25 @@ function findBestSnake(snakes) {
         snakesWithDistance.push({ snake: snake, food: closestFood, distance: distance })
     }
 
-    // 
+    //
 
-    let lowestValue = Math.min.apply(Math, snakesWithDistance.map(object => object.distance))
+    bestSnakesWithDistance = snakesWithDistance.sort((a, b) => b.distance - a.distance)
 
     //
 
-    bestSnakeWithDistance = snakesWithDistance.filter(object => object.distance == lowestValue)[0]
-    return bestSnakeWithDistance.snake
+    bestSnakesWithDistance = bestSnakesWithDistance.slice(0, 10)
+
+    //
+
+    for (let object of bestSnakesWithDistance) {
+
+        bestSnakes.push(object.snake)
+    }
+
+    return bestSnakes
 }
 
-function reproduce(snake, snakes, tick) {
+function reproduce(bestSnakes, snakes, tick) {
 
     // Record stats
 
@@ -207,12 +277,19 @@ function reproduce(snake, snakes, tick) {
 
     // Create new snakes
 
-    for (let i = 0; i < snakes.length; i++) {
+    for (let i = 0; i < bestSnakes.length; i++) {
 
-        let duplicateNetwork = _.cloneDeep(snake.network)
-        duplicateNetwork.learn()
+        let snake = bestSnakes[i]
 
-        generateSnake({ network: duplicateNetwork, color: snake.color })
+        let childAmount = Math.floor(bestSnakes.length / 10) * 10
+
+        for (let i = 0; i < childAmount; i++) {
+
+            let duplicateNetwork = _.cloneDeep(snake.network)
+            duplicateNetwork.learn()
+
+            generateSnake({ network: duplicateNetwork, color: snake.color })
+        }
     }
 }
 
@@ -258,7 +335,7 @@ function run(opts) {
 
             let closestFood = findClosestFood(snake)
 
-            let inputs = [closestFood.x, snake.x, closestFood.y, snake.y]
+            let inputs = [closestFood.x, snake.x, closestFood.y, snake.y, findDistance(closestFood, snake)]
             let outputCount = Object.keys(options).length
 
             //
@@ -271,6 +348,10 @@ function run(opts) {
             //
 
             snake.network.run({ inputs: inputs })
+
+            //
+
+            changeDirection(snake)
 
             //
 
@@ -305,7 +386,14 @@ function run(opts) {
 
         //
 
-        let bestSnake = findBestSnake(snakes)
+        let bestSnakes = findBestSnakes(snakes)
+        if (bestSnakes.length == 0) return
+
+        bestSnakes = bestSnakes.slice(0, 10)
+
+        console.log(bestSnakes)
+
+        let bestSnake = bestSnakes[0]
 
         bestSnake.network.visualsParent.classList.add("visualsParentShow")
 
@@ -315,11 +403,8 @@ function run(opts) {
 
             // Reproduce with closest snake
 
-            reproduce(bestSnake, snakes, tick)
+            reproduce(bestSnakes, snakes, tick)
         }
-
-        return
-
     }
 }
 

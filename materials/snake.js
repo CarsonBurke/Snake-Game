@@ -1,34 +1,52 @@
 let options = {
-    moveUp: function(snake) {
+    rotateCounterClockwise(snake) {
 
-        if (snake.y <= 0) return
+        switch (snake.direction) {
 
-        snake.y -= 1
+            case "up":
 
-        setPosition(snake)
+                snake.direction = "left"
+                break
+
+            case "left":
+
+                snake.direction = "down"
+                break
+
+            case "down":
+
+                snake.direction = "right"
+                break
+
+            case "right":
+
+                snake.direction = "up"
+                break
+        }
     },
-    moveLeft: function(snake) {
+    rotateClockwise(snake) {
 
-        if (snake.x <= 0) return
+        switch (snake.direction) {
 
-        snake.x -= 1
+            case "up":
 
-        setPosition(snake)
-    },
-    moveDown: function(snake) {
+                snake.direction = "right"
+                break
 
-        if (snake.y >= gridSize - 1) return
+            case "left":
 
-        snake.y += 1
+                snake.direction = "up"
+                break
 
-        setPosition(snake)
-    },
-    moveRight: function(snake) {
+            case "down":
 
-        if (snake.x >= gridSize - 1) return
+                snake.direction = "left"
+                break
 
-        snake.x += 1
+            case "right":
 
-        setPosition(snake)
+                snake.direction = "down"
+                break
+        }
     },
 }

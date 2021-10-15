@@ -3,5 +3,5 @@ generateGrid()
 initWorld()
 
 run({
-    tickSpeed: 1,
+    tickSpeed: 10,
 })
