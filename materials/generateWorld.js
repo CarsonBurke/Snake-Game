@@ -107,7 +107,7 @@ function initWorld() {
         })
     }
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 1; i++) {
 
         generateFood({
             color: "#11dfd8"

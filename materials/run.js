@@ -12,7 +12,7 @@ function createNetwork(snake, opts) {
 
     // Create layers
 
-    let layerCount = 5
+    let layerCount = 3
 
     for (let i = 0; i < layerCount; i++) network.addLayer({})
 
