@@ -382,8 +382,6 @@ function run(opts) {
                     color: "#11dfd8"
                 })
             }
-
-            //
         }
 
         //
