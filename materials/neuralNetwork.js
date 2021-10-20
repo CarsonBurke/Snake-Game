@@ -237,7 +237,7 @@ class NeuralNetwork {
 
         let network = this
 
-        function findInputs(layerName) {
+        function findInputs(layerName, perceptron) {
 
             let newInputs = []
 
@@ -262,13 +262,19 @@ class NeuralNetwork {
 
                 let line = previousLayer.lines[lineID]
 
+                // Make sure line is connected to to perceptron
+
+                if (line.perceptron2 != perceptron) continue
+
+                // Add lines value to inputs
+
                 newInputs.push(line.perceptron1.activateValue)
             }
 
             return newInputs
         }
 
-        //
+        // Loop through layers
 
         for (let layerName in this.layers) {
 
@@ -276,13 +282,15 @@ class NeuralNetwork {
 
             // loop through perceptrons in the layer
 
-            for (let perceptron1Name in layer.perceptrons) {
+            for (let perceptronName in layer.perceptrons) {
 
-                let perceptron1 = layer.perceptrons[perceptron1Name]
+                let perceptron = layer.perceptrons[perceptronName]
 
-                perceptron1.run({
+                // Run the perceptron
+
+                perceptron.run({
                     importantValues: this.getImportantValues(),
-                    inputs: findInputs(layerName),
+                    inputs: findInputs(layerName, perceptron),
                 })
             }
         }
@@ -336,7 +344,7 @@ class NeuralNetwork {
 
                     let line = layer.lines[lineID]
 
-                    this.mutateLine(layer, line, lineID, perceptron1, perceptron2)
+                    this.mutateLine(layer, line, perceptron1, perceptron2, lineID)
                 }
             }
         }
@@ -459,12 +467,12 @@ class NeuralNetwork {
 
                     let line = layer.lines[lineID]
 
-                    this.mutateLine(layer, line, lineID, perceptron1, perceptron2)
+                    this.mutateLine(layer, line, perceptron1, perceptron2, lineID)
                 }
             }
         }
     }
-    mutateLine(layer, line, lineID, perceptron1, perceptron2) {
+    mutateLine(layer, line, perceptron1, perceptron2, lineID) {
 
         // Get random value influenced by learning rate
 
@@ -478,15 +486,13 @@ class NeuralNetwork {
 
         let boolean = Math.floor(Math.random() * 2)
 
-        // Create line if 0
+        // Create line if 2
 
         if (boolean == 0) {
 
             // Stop if line exists
 
             if (line) return
-
-            console.log(line)
 
             // Create line
 
@@ -510,7 +516,11 @@ class NeuralNetwork {
 
             // Remove line el
 
+            console.log(line.el)
+
             line.el.remove()
+
+            console.log(line.el)
 
             // Delete line
 
