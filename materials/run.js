@@ -6,6 +6,10 @@ let bestScore = 0
 
 function createNetwork(snake, opts) {
 
+    const inputCount = 4
+
+    const outputCount = 2
+
     // Create neural network
 
     let network = new NeuralNetwork()
@@ -20,7 +24,7 @@ function createNetwork(snake, opts) {
 
     // Create input perceptrons
 
-    network.layers[0].addPerceptrons(opts.inputCount)
+    for (let i = 0; i < inputCount; i++) network.layers[0].addPerceptron()
 
     // Create hidden perceptrons
 
@@ -38,17 +42,17 @@ function createNetwork(snake, opts) {
 
             let layer = network.layers[layerName]
 
-            layer.addPerceptrons(hiddenPerceptronsNeed)
+            for (let i = 0; i < hiddenPerceptronsNeed; i++) layer.addPerceptron()
         }
     }
 
     // Create output perceptrons
 
-    network.layers[layerCount - 1].addPerceptrons(opts.outputCount)
+    for (let i = 0; i < outputCount; i++) network.layers[layerCount - 1].addPerceptron()
 
     //
 
-    network.config()
+    network.createVisuals()
 
     //
 
@@ -337,7 +341,7 @@ function run(opts) {
 
             let closestFood = findClosestFood(snake)
 
-            let inputs = [closestFood.x, snake.x, closestFood.y, snake.y]
+            const inputs = [closestFood.x, snake.x, closestFood.y, snake.y]
             let outputCount = Object.keys(options).length
 
             //
@@ -349,7 +353,7 @@ function run(opts) {
 
             //
 
-            snake.network.run({ inputs: inputs })
+            snake.network.forwardPropagate(inputs)
 
             //
 
